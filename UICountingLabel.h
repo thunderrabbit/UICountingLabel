@@ -16,6 +16,7 @@ typedef NSAttributedString* (^UICountingLabelAttributedFormatBlock)(double value
 @property (nonatomic, strong) NSString *format;
 @property (nonatomic, assign) UILabelCountingMethod method;
 @property (nonatomic, assign) NSTimeInterval animationDuration;
+@property (nonatomic, assign) double easingRate; // default: 3.0f
 
 @property (nonatomic, copy) UICountingLabelFormatBlock formatBlock;
 @property (nonatomic, copy) UICountingLabelAttributedFormatBlock attributedFormatBlock;

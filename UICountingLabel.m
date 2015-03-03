@@ -92,7 +92,6 @@
 @property NSTimeInterval progress;
 @property NSTimeInterval lastUpdate;
 @property NSTimeInterval totalTime;
-@property double easingRate;
 
 @property (nonatomic, weak) NSTimer *timer;
 @property (nonatomic, strong) UILabelCounter *counter;
@@ -110,6 +109,8 @@
     [self countFrom:value to:endValue withDuration:self.animationDuration];
 }
 
+#define kDefaultEasingRate 3.0f
+
 -(void)countFrom:(double)startValue to:(double)endValue withDuration:(NSTimeInterval)duration {
     
     self.startingValue = startValue;
@@ -126,7 +127,6 @@
         return;
     }
 
-    self.easingRate = 3.0;
     self.progress = 0;
     self.totalTime = duration;
     self.lastUpdate = [NSDate timeIntervalSinceReferenceDate];
@@ -150,7 +150,7 @@
             break;
     }
 
-    self.counter.rate = 3.0;
+    self.counter.rate = self.easingRate > 0. ? self.easingRate : kDefaultEasingRate;
 
     NSTimer *timer = [NSTimer timerWithTimeInterval:(1.0f/30.0f) target:self selector:@selector(updateValue:) userInfo:nil repeats:YES];
     [[NSRunLoop mainRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];

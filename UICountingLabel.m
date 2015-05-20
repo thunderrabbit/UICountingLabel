@@ -10,9 +10,9 @@
 
 @interface UILabelCounter : NSObject
 
--(CGFloat)update:(CGFloat)t;
+-(double)update:(double)t;
 
-@property CGFloat rate;
+@property double rate;
 
 @end
 
@@ -34,7 +34,7 @@
 
 @implementation  UILabelCounter
 
--(CGFloat)update:(CGFloat)t{
+-(double)update:(double)t{
     return 0;
 }
 
@@ -42,7 +42,7 @@
 
 @implementation UILabelCounterLinear
 
--(CGFloat)update:(CGFloat)t
+-(double)update:(double)t
 {
     return t;
 }
@@ -51,7 +51,7 @@
 
 @implementation UILabelCounterEaseIn
 
--(CGFloat)update:(CGFloat)t
+-(double)update:(double)t
 {
     return powf(t, self.rate);
 }
@@ -60,7 +60,7 @@
 
 @implementation UILabelCounterEaseOut
 
--(CGFloat)update:(CGFloat)t{
+-(double)update:(double)t{
     return 1.0-powf((1.0-t), self.rate);
 }
 
@@ -68,7 +68,7 @@
 
 @implementation UILabelCounterEaseInOut
 
--(CGFloat) update: (CGFloat) t
+-(double) update: (double) t
 {
 	int sign =1;
 	int r = (int) self.rate;
@@ -87,12 +87,12 @@
 
 @interface UICountingLabel ()
 
-@property CGFloat startingValue;
-@property CGFloat destinationValue;
+@property double startingValue;
+@property double destinationValue;
 @property NSTimeInterval progress;
 @property NSTimeInterval lastUpdate;
 @property NSTimeInterval totalTime;
-@property CGFloat easingRate;
+@property double easingRate;
 
 @property (nonatomic, weak) NSTimer *timer;
 @property (nonatomic, strong) UILabelCounter *counter;
@@ -101,16 +101,16 @@
 
 @implementation UICountingLabel
 
--(void)countFrom:(CGFloat)value to:(CGFloat)endValue {
+-(void)countFrom:(double)value to:(double)endValue {
     
-    if (self.animationDuration == 0.0f) {
-        self.animationDuration = 2.0f;
+    if (self.animationDuration == 0.0) {
+        self.animationDuration = 2.0;
     }
     
     [self countFrom:value to:endValue withDuration:self.animationDuration];
 }
 
--(void)countFrom:(CGFloat)startValue to:(CGFloat)endValue withDuration:(NSTimeInterval)duration {
+-(void)countFrom:(double)startValue to:(double)endValue withDuration:(NSTimeInterval)duration {
     
     self.startingValue = startValue;
     self.destinationValue = endValue;
@@ -126,7 +126,7 @@
         return;
     }
 
-    self.easingRate = 3.0f;
+    self.easingRate = 3.0;
     self.progress = 0;
     self.totalTime = duration;
     self.lastUpdate = [NSDate timeIntervalSinceReferenceDate];
@@ -150,7 +150,7 @@
             break;
     }
 
-    self.counter.rate = 3.0f;
+    self.counter.rate = 3.0;
 
     NSTimer *timer = [NSTimer timerWithTimeInterval:(1.0f/30.0f) target:self selector:@selector(updateValue:) userInfo:nil repeats:YES];
     [[NSRunLoop mainRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];
@@ -158,20 +158,20 @@
     self.timer = timer;
 }
 
-- (void)countFromCurrentValueTo:(CGFloat)endValue {
+- (void)countFromCurrentValueTo:(double)endValue {
     [self countFrom:[self currentValue] to:endValue];
 }
 
-- (void)countFromCurrentValueTo:(CGFloat)endValue withDuration:(NSTimeInterval)duration {
+- (void)countFromCurrentValueTo:(double)endValue withDuration:(NSTimeInterval)duration {
     [self countFrom:[self currentValue] to:endValue withDuration:duration];
 }
 
-- (void)countFromZeroTo:(CGFloat)endValue {
-    [self countFrom:0.0f to:endValue];
+- (void)countFromZeroTo:(double)endValue {
+    [self countFrom:0.0 to:endValue];
 }
 
-- (void)countFromZeroTo:(CGFloat)endValue withDuration:(NSTimeInterval)duration {
-    [self countFrom:0.0f to:endValue withDuration:duration];
+- (void)countFromZeroTo:(double)endValue withDuration:(NSTimeInterval)duration {
+    [self countFrom:0.0 to:endValue withDuration:duration];
 }
 
 - (void)updateValue:(NSTimer *)timer {
@@ -194,7 +194,7 @@
     }
 }
 
-- (void)setTextValue:(CGFloat)value
+- (void)setTextValue:(double)value
 {
     if (self.attributedFormatBlock != nil) {
         self.attributedText = self.attributedFormatBlock(value);
@@ -231,15 +231,17 @@
     }
 }
 
-- (CGFloat)currentValue {
+- (double)currentValue {
     
     if (self.progress >= self.totalTime) {
         return self.destinationValue;
     }
-    
-    CGFloat percent = self.progress / self.totalTime;
-    CGFloat updateVal = [self.counter update:percent];
-    return self.startingValue + (updateVal * (self.destinationValue - self.startingValue));
+
+
+    double percent = self.progress / self.totalTime;
+    double updateVal = [self.counter update:percent];
+    double ret = self.startingValue + (updateVal * (self.destinationValue - self.startingValue));
+    return ret;
 }
 
 @end
